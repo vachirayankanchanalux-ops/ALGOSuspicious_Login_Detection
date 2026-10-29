@@ -63,17 +63,20 @@ def selection_sort(A):
 # 3) Sequential Scan: ไล่ตรวจข้อมูลที่เรียงแล้ว
 # ---------------------------------------------------------------
 def check_run(user, run, alerts):
-    """run = เวลาของ FAILED ที่ติดกันของบัญชีเดียว"""
-    i = 0
-    while i < len(run):
-        j = i
-        while j + 1 < len(run) and run[j + 1] - run[i] <= WINDOW:
-            j += 1
-        if j - i + 1 >= THRESHOLD:
-            alerts.append((user, j - i + 1, run[i], run[j]))
-            i = j + 1
-        else:
-            i += 1
+    n = len(run)
+    best_count = 0
+    best_start = None
+    best_end = None
+    for i in range(n):
+        for j in range(i, n):
+            if run[j] - run[i] <= WINDOW:
+                count = j - i + 1
+                if count >= THRESHOLD and count > best_count:
+                    best_count = count
+                    best_start = run[i]
+                    best_end = run[j]
+    if best_count >= THRESHOLD:
+        alerts.append((user, best_count, best_start, best_end))
 
 
 def scan(records):
